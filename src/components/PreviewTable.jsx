@@ -23,7 +23,7 @@ export default function PreviewTable() {
 
   if (!records.length) {
     return (
-      <div className="text-center text-slate-400">
+      <div className="sky-empty">
         No data. Upload a file first.
       </div>
     );
@@ -31,39 +31,47 @@ export default function PreviewTable() {
 
   return (
     <div>
-      <div className="mb-6 rounded-lg bg-slate-800/50 p-4">
-        <div className="text-sm text-slate-300">
-          <span className="font-semibold text-cyan-400">{stats?.totalRows}</span> rows |
-          <span className="ml-2 font-semibold text-cyan-400">{stats?.uniqueIPs}</span> unique IPs |
-          <span className="ml-2 font-semibold text-red-400">{stats?.failedAttempts}</span> failed
+      <h1 className="sky-heading mb-10">Parsed Records</h1>
+
+      <div className="sky-box mb-10">
+        <div className="flex items-center gap-10">
+          <div>
+            <div className="sky-stat-number">{stats?.totalRows}</div>
+            <div className="sky-stat-label">Total Rows</div>
+          </div>
+          <div>
+            <div className="sky-stat-number text-cyan-500">{stats?.uniqueIPs}</div>
+            <div className="sky-stat-label">Unique IPs</div>
+          </div>
+          <div>
+            <div className="sky-stat-number">{stats?.failedAttempts}</div>
+            <div className="sky-stat-label">Failed</div>
+          </div>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-slate-700">
-        <table className="w-full text-sm">
-          <thead className="border-b border-slate-700 bg-slate-900">
+      <div className="sky-box overflow-x-auto">
+        <table className="sky-table">
+          <thead>
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-slate-300">IP</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-300">Timestamp</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-300">Username</th>
-              <th className="px-4 py-3 text-left font-semibold text-slate-300">Status</th>
+              <th>IP Address</th>
+              <th>Timestamp</th>
+              <th>Username</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {records.slice(0, 5).map((record, idx) => (
-              <tr
-                key={idx}
-                className="border-b border-slate-700 hover:bg-slate-800/50"
-              >
-                <td className="px-4 py-3 font-mono text-cyan-300">{record.ip}</td>
-                <td className="px-4 py-3 text-slate-300">{record.timestamp}</td>
-                <td className="px-4 py-3 text-slate-300">{record.username}</td>
-                <td className="px-4 py-3">
+              <tr key={idx}>
+                <td className="sky-mono font-semibold text-black">{record.ip}</td>
+                <td>{record.timestamp}</td>
+                <td>{record.username}</td>
+                <td>
                   <span
-                    className={`rounded px-2 py-1 text-xs font-semibold ${
+                    className={`sky-badge ${
                       record.status === 'failed'
-                        ? 'bg-red-900/50 text-red-300'
-                        : 'bg-green-900/50 text-green-300'
+                        ? 'sky-badge-black'
+                        : 'sky-badge-outline'
                     }`}
                   >
                     {record.status}
@@ -75,39 +83,41 @@ export default function PreviewTable() {
         </table>
       </div>
 
-      <div className="mt-8">
-        <h3 className="mb-4 text-lg font-semibold text-slate-100">Features Extracted</h3>
-        <button
-          onClick={() => setShowFeatures(!showFeatures)}
-          className="rounded-lg bg-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-600"
-        >
-          {showFeatures ? 'Hide' : 'Show'} Feature Matrix
-        </button>
+      <div className="mt-12 sky-box">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="sky-subheading">Feature Matrix</h2>
+          <button
+            onClick={() => setShowFeatures(!showFeatures)}
+            className="sky-btn sky-btn-secondary text-xs px-5 py-2"
+          >
+            {showFeatures ? 'Hide' : 'Show'} Features
+          </button>
+        </div>
 
         {showFeatures && (
-          <div className="mt-4 overflow-x-auto rounded-lg border border-slate-700">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-700 bg-slate-900">
+          <div className="overflow-x-auto">
+            <table className="sky-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">IP</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Attempts</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Failed</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Fail %</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Frequency</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Usernames</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Peak Hour</th>
+                  <th>IP</th>
+                  <th>Attempts</th>
+                  <th>Failed</th>
+                  <th>Fail %</th>
+                  <th>Frequency</th>
+                  <th>Usernames</th>
+                  <th>Peak Hour</th>
                 </tr>
               </thead>
               <tbody>
                 {features && Object.values(features).map((f, idx) => (
-                  <tr key={idx} className="border-b border-slate-700 hover:bg-slate-800/50">
-                    <td className="px-4 py-3 font-mono text-cyan-300">{f.ip}</td>
-                    <td className="px-4 py-3 text-slate-300">{f.totalAttempts}</td>
-                    <td className="px-4 py-3 text-red-300">{f.failedAttempts}</td>
-                    <td className="px-4 py-3 text-red-300">{f.failureRatio}%</td>
-                    <td className="px-4 py-3 text-slate-300">{f.loginFrequency}/hr</td>
-                    <td className="px-4 py-3 text-slate-300">{f.uniqueUsernames}</td>
-                    <td className="px-4 py-3 text-slate-300">{f.peakHour}:00</td>
+                  <tr key={idx}>
+                    <td className="sky-mono font-semibold text-black">{f.ip}</td>
+                    <td>{f.totalAttempts}</td>
+                    <td className="font-semibold">{f.failedAttempts}</td>
+                    <td className="font-semibold">{f.failureRatio}%</td>
+                    <td>{f.loginFrequency}/hr</td>
+                    <td>{f.uniqueUsernames}</td>
+                    <td>{f.peakHour}:00</td>
                   </tr>
                 ))}
               </tbody>
@@ -116,7 +126,7 @@ export default function PreviewTable() {
         )}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-12">
         <button
           onClick={() => {
             const result = performClustering(records);
@@ -125,56 +135,56 @@ export default function PreviewTable() {
             localStorage.setItem('clustered', JSON.stringify(result.classified));
             localStorage.setItem('clusterMetadata', JSON.stringify(result.metadata));
           }}
-          className="rounded-lg bg-emerald-600 px-6 py-2 font-medium text-white hover:bg-emerald-700"
+          className="sky-btn sky-btn-primary"
         >
           Run K-Means Clustering
         </button>
       </div>
 
       {clustered && clusterMetadata && (
-        <div className="mt-8">
-          <h3 className="mb-4 text-lg font-semibold text-slate-100">Clustering Results</h3>
+        <div className="mt-12">
+          <h2 className="sky-subheading mb-8">Clustering Results</h2>
 
-          <div className="mb-6 grid grid-cols-3 gap-4">
-            <div className="rounded-lg bg-green-900/30 p-4 text-center">
-              <div className="text-2xl font-bold text-green-400">{clusterMetadata.clusterCounts.Normal}</div>
-              <div className="text-sm text-slate-300">Normal</div>
+          <div className="grid grid-cols-3 gap-6 mb-10">
+            <div className="sky-card text-center">
+              <div className="sky-stat-number">{clusterMetadata.clusterCounts.Normal}</div>
+              <div className="sky-stat-label">Normal</div>
             </div>
-            <div className="rounded-lg bg-yellow-900/30 p-4 text-center">
-              <div className="text-2xl font-bold text-yellow-400">{clusterMetadata.clusterCounts.Suspicious}</div>
-              <div className="text-sm text-slate-300">Suspicious</div>
+            <div className="sky-card text-center">
+              <div className="sky-stat-number">{clusterMetadata.clusterCounts.Suspicious}</div>
+              <div className="sky-stat-label">Suspicious</div>
             </div>
-            <div className="rounded-lg bg-red-900/30 p-4 text-center">
-              <div className="text-2xl font-bold text-red-400">{clusterMetadata.clusterCounts.Attacker}</div>
-              <div className="text-sm text-slate-300">Attacker</div>
+            <div className="sky-card-dark text-center">
+              <div className="sky-stat-number text-white">{clusterMetadata.clusterCounts.Attacker}</div>
+              <div className="sky-stat-label text-gray-400">Attacker</div>
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-lg border border-slate-700">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-700 bg-slate-900">
+          <div className="sky-box overflow-x-auto">
+            <table className="sky-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">IP</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Cluster</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Fail %</th>
-                  <th className="px-4 py-3 text-left font-semibold text-slate-300">Risk Score</th>
+                  <th>IP Address</th>
+                  <th>Cluster</th>
+                  <th>Fail %</th>
+                  <th>Risk Score</th>
                 </tr>
               </thead>
               <tbody>
                 {clustered.map((item, idx) => (
-                  <tr key={idx} className="border-b border-slate-700 hover:bg-slate-800/50">
-                    <td className="px-4 py-3 font-mono text-cyan-300">{item.ip}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded px-2 py-1 text-xs font-semibold ${
-                        item.clusterLabel === 'Normal' ? 'bg-green-900/50 text-green-300' :
-                        item.clusterLabel === 'Suspicious' ? 'bg-yellow-900/50 text-yellow-300' :
-                        'bg-red-900/50 text-red-300'
+                  <tr key={idx}>
+                    <td className="sky-mono font-semibold text-black">{item.ip}</td>
+                    <td>
+                      <span className={`sky-badge ${
+                        item.clusterLabel === 'Normal' ? 'sky-badge-outline' :
+                        item.clusterLabel === 'Suspicious' ? 'sky-badge-accent' :
+                        'sky-badge-black'
                       }`}>
                         {item.clusterLabel}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{item.failureRatio}%</td>
-                    <td className="px-4 py-3 font-semibold text-slate-300">{item.riskScore}</td>
+                    <td>{item.failureRatio}%</td>
+                    <td className="font-bold text-black">{item.riskScore}</td>
                   </tr>
                 ))}
               </tbody>
