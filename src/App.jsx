@@ -1,11 +1,12 @@
-import React from 'react';
-import { Routes, Route, Link, Outlet, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Upload from './components/Upload';
 import PreviewTable from './components/PreviewTable';
 import LiveOps from './components/LiveOps';
 import RiskScoreboard from './components/RiskScoreboard';
 import ClusterLab from './components/ClusterLab';
 import ClusterInsights from './components/ClusterInsights';
+import Splash from './components/Splash';
 
 const navLinks = [
   { to: '/', label: 'Upload' },
@@ -59,8 +60,19 @@ function Layout() {
 }
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const visited = localStorage.getItem('splashShown');
+    if (!visited) {
+      navigate('/splash');
+      localStorage.setItem('splashShown', 'true');
+    }
+  }, [navigate]);
+
   return (
     <Routes>
+      <Route path="/splash" element={<Splash />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Upload />} />
         <Route path="preview" element={<PreviewTable />} />
@@ -74,3 +86,4 @@ function App() {
 }
 
 export default App;
+
